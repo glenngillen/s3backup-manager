@@ -3,13 +3,13 @@ require 'rake'
 
 begin
   require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "s3backup-manager"
-    gem.summary = %Q{TODO}
-    gem.email = "glenn@rubypond.com"
-    gem.homepage = "http://github.com/rubypond/s3backup-manager"
-    gem.authors = ["Glenn Gillen"]
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "s3backup-manager"
+    gemspec.summary = "Scripts and daemon to manage encrypted backups on AmazonS3"
+    gemspec.description = "A series of scripts and a rack application for backing up databases and filesystems into tarballs, encrypting, and then storing off-site on AmazonS3"
+    gemspec.email = "glenn@rubypond.com"
+    gemspec.homepage = "http://github.com/rubypond/s3backup-manager"
+    gemspec.authors = ["Glenn Gillen"]
   end
 
 rescue LoadError

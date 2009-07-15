@@ -1,0 +1,77 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require "#{File.dirname(__FILE__)}/../models/bucket"
+require "#{File.dirname(__FILE__)}/../models/file_backup"
+require "#{File.dirname(__FILE__)}/../models/database_backup"
+
+options = {}
+optparse = OptionParser.new do|opts|
+  opts.banner = "Usage: s3backup.rb [options] file1 file2 ..."
+
+  opts.on('-l', '--list', 'List all available buckets') do
+    options[:list] = true
+  end
+  
+  opts.on('--create BUCKET', String, 'Create a new bucket') do |bucket_name|
+    S3BackupManager::Bucket.create!(bucket_name)
+    exit
+  end
+  
+
+  options[:type] = "file"
+  opts.on('--type TYPE', String, 'Type of backup. Valid options are "file" and "database". Defaults to "file"' ) do |t|
+    unless ["file","database"].include?(t)
+      puts 'Only "file" and "database" are valid values for --type'
+      exit(1)
+    end
+    options[:type] = t.downcase
+  end
+
+  options[:adapter] = "postgres"
+  opts.on('--adapter ADAPTER', 'Type of database to backup. To be used with "--type database"' ) do |a|
+    unless ["mysql","postgres"].include?(a)
+      puts 'Only "mysql" and "postgres" are valid values for --adapter'
+      exit(1)
+    end
+    options[:adapter] = a
+  end
+  
+  opts.on('--username USER', 'User to connect to the database as' ) do |u|
+    options[:username] = u
+  end
+  
+  
+  options[:bucket] = nil
+  opts.on('--bucket BUCKET', 'AmazonS3 bucket you wish to store the backup in' ) do |b|
+    options[:bucket] = b
+  end
+
+  opts.on('-h', '--help', 'Display this screen') do
+    puts opts
+    exit
+  end
+end
+optparse.parse!
+
+if options[:list] && !options[:type_provided]
+  S3BackupManager::Bucket.find_all.each do |bucket|
+    puts bucket
+  end
+  exit
+end
+
+def setup_backup_adapter(options)
+  if options[:bucket]
+    eval("S3BackupManager::#{options[:type].capitalize}Backup").new(options)
+  else
+    puts "You need to specify a valid bucket for retrieval"
+    exit(1) 
+  end  
+end
+
+backup_adapter = setup_backup_adapter(options)
+
+ARGV.each do |f|
+  puts "Backing up #{f}..."
+  backup_adapter.backup(f)
+end

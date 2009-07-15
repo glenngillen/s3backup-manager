@@ -1,0 +1,4 @@
+%ul
+  - @buckets.each do |bucket|
+    %li
+      %a{ :href => "/#{bucket}"}= bucket

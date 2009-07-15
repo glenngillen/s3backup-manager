@@ -1,0 +1,24 @@
+monthly_run_day: 7
+weekly_run_day: Sun
+daily_run_time: 04:13
+hourly_run_minute: 47
+
+hourlies:
+  database:
+    adapter: postgres
+    database: longpockets_production
+dailies:
+  filesystem: /var/www/apps/rubypond
+  filesystem: /var/www/apps/longpockets
+  filesystem: /var/www/apps/cms
+  
+weeklies:
+  database: 
+    adapter: postgres
+    database: rubypond_production
+    
+  database: 
+    adapter: couchdb
+    database: rubypond_production
+
+monthlies:
