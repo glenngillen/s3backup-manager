@@ -1,10 +1,7 @@
-%w{rubygems aws/s3 yaml}.each do |lib|
-  require lib
-end
-
 module S3BackupManager
   module BucketError
     class NoNameError < StandardError; end
+    class NoConfig < StandardError; end
   end
 
   class Bucket
@@ -46,11 +43,13 @@ module S3BackupManager
 
     private
       def self.config
-        YAML.load_file("#{File.dirname(__FILE__)}/../config/config.yml")
+        YAML.load_file("/etc/s3backup-manager/config.yml")
+      rescue Errno::ENOENT
+        raise S3BackupManager::BucketError::NoConfig.new("No configuration file could be found at /etc/s3backup-manager/config.yml")
       end
     
       def self.expand_name(name)
-        "s3backupmanager_#{name}"
+        "#{config["collection_prefix"]}_#{name}"
       end
     
       def self.connect!

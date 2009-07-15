@@ -1,8 +1,3 @@
-require "#{File.dirname(__FILE__)}/bucket"
-%w{rubygems openssl digest/sha2 zlib archive/tar/minitar}.each do |lib|
-  require lib
-end
-
 module S3BackupManager
   class FileBackup
     attr_accessor :bucket

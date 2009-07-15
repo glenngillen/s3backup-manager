@@ -1,43 +1,29 @@
 require 'rubygems'
 require 'rake'
+require 'rake/gempackagetask'
+require 'spec/rake/spectask'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "s3backup-manager"
-    gemspec.summary = "Scripts and daemon to manage encrypted backups on AmazonS3"
-    gemspec.description = "A series of scripts and a rack application for backing up databases and filesystems into tarballs, encrypting, and then storing off-site on AmazonS3"
-    gemspec.email = "glenn@rubypond.com"
-    gemspec.homepage = "http://github.com/rubypond/s3backup-manager"
-    gemspec.authors = ["Glenn Gillen"]
-  end
-
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+gem_spec = Gem::Specification.new do |s|
+  s.version = '0.0.1'
+  s.name = "s3backup-manager"
+  s.summary = "Scripts and daemon to manage encrypted backups on AmazonS3"
+  s.description = "A series of scripts and a rack application for backing up databases and filesystems into tarballs, encrypting, and then storing off-site on AmazonS3"
+  s.email = "glenn@rubypond.com"
+  s.homepage = "http://github.com/rubypond/s3backup-manager"
+  s.authors = ["Glenn Gillen"]
+  s.test_files = FileList['spec/**/*']
+  s.files = FileList['README', 'Rakefile', 'lib/**/*.rb', 'bin/*', 'config/*']
+  s.add_dependency('hpricot', '>= 0.5')
+  s.add_dependency('mechanize', '>= 0.6.3')
+  s.has_rdoc = 'false'
 end
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/*_test.rb'
-  test.verbose = true
+Rake::GemPackageTask.new(gem_spec) do |pkg|
+  pkg.need_zip = false
+  pkg.need_tar = false
 end
 
-begin
-  require 'rcov/rcovtask'
-  Rcov::RcovTask.new do |test|
-    test.libs << 'test'
-    test.pattern = 'test/**/*_test.rb'
-    test.verbose = true
-  end
-rescue LoadError
-  task :rcov do
-    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
-  end
-end
-
-
-task :default => :test
+task :default => :spec
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
@@ -54,3 +40,11 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
+desc "Run all specs"
+Spec::Rake::SpecTask.new do |t|
+  t.spec_files = FileList['spec/**/*_spec.rb']
+  t.spec_opts = ['--options', 'spec/spec.opts']
+  t.rcov = true
+  t.rcov_dir = '../doc/output/coverage'
+  t.rcov_opts = ['--exclude', 'spec\/spec,bin\/spec,examples,\/var\/lib\/gems,\.autotest']
+end

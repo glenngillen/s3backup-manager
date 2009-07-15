@@ -1,6 +1,3 @@
-require "#{File.dirname(__FILE__)}/file_backup"
-require "#{File.dirname(__FILE__)}/../lib/mysql_adapter"
-require "#{File.dirname(__FILE__)}/../lib/postgres_adapter"
 module S3BackupManager
   class DatabaseBackup < FileBackup
     def initialize(opts = {})

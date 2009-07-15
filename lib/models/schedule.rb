@@ -1,17 +1,13 @@
-%w{rubygems yaml database_backup file_backup}.each do |lib|
-  require lib
-end
-
 class Schedule
   
   def self.find_pending
-    if Time.now.min = config["hourly_run_minute"]
+    if Time.now.min == config["hourly_run_minute"]
       run_hourlies
     end
-    if Time.now.strftime("%H:%M") = config["daily_run_time"]
+    if Time.now.strftime("%H:%M") == config["daily_run_time"]
       run_dailies
     end
-    if Time.n
+    # if Time.n
   end
   
   private
