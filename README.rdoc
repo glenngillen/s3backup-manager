@@ -1,0 +1,7 @@
+= s3backup-manager
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 Glenn Gillen. See LICENSE for details.
