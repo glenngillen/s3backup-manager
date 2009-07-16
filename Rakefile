@@ -5,7 +5,7 @@ require 'spec/rake/spectask'
 require 'rake/rdoctask'
 
 gem_spec = Gem::Specification.new do |s|
-  s.version = '0.0.1'
+  s.version = '0.0.2'
   s.name = "s3backup-manager"
   s.summary = "Scripts and daemon to manage encrypted backups on AmazonS3"
   s.description = "A series of scripts and a rack application for backing up databases and filesystems into tarballs, encrypting, and then storing off-site on AmazonS3"
@@ -13,9 +13,9 @@ gem_spec = Gem::Specification.new do |s|
   s.homepage = "http://github.com/rubypond/s3backup-manager"
   s.authors = ["Glenn Gillen"]
   s.test_files = FileList['spec/**/*']
-  s.files = FileList['README', 'Rakefile', 'lib/**/*.rb', 'bin/*', 'config/*']
-  s.add_dependency('hpricot', '>= 0.5')
-  s.add_dependency('mechanize', '>= 0.6.3')
+  s.files = FileList['README.rdoc', 'Rakefile', 'lib/**/*.rb', 'bin/*', 'config/*']
+  s.add_dependency('aws-s3', '>= 0.4')
+  s.add_dependency('archive-tar-minitar', '>= 0.5.2')
   s.has_rdoc = 'false'
 end
 

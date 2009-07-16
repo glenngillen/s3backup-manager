@@ -1,6 +1,7 @@
 = s3backup-manager
 
-Description goes here.
+The beginnings of a system for managing offsite encrypted backups using
+AmazonS3.
 
 == Copyright
 
