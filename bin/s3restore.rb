@@ -66,7 +66,7 @@ backup_adapter = setup_backup_adapter(options)
 
 if options[:list] && options[:bucket]
   backup_adapter.files.each do |file|
-    puts file.key.sub(%r{^filesystem/},"")
+    puts "#{file.key.sub(%r{^filesystem/},"")} (%0.2f KB)" % (file.size.to_f/1024)
   end
   exit
 end
