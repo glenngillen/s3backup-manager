@@ -2,6 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'rake/gempackagetask'
 require 'spec/rake/spectask'
+require 'rake/rdoctask'
 
 gem_spec = Gem::Specification.new do |s|
   s.version = '0.0.1'
@@ -25,7 +26,6 @@ end
 
 task :default => :spec
 
-require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
   if File.exist?('VERSION.yml')
     config = YAML.load(File.read('VERSION.yml'))
@@ -44,7 +44,7 @@ desc "Run all specs"
 Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
   t.spec_opts = ['--options', 'spec/spec.opts']
-  t.rcov = true
-  t.rcov_dir = '../doc/output/coverage'
-  t.rcov_opts = ['--exclude', 'spec\/spec,bin\/spec,examples,\/var\/lib\/gems,\.autotest']
+  t.rcov = false
+  # t.rcov_dir = '../doc/output/coverage'
+  # t.rcov_opts = ['--exclude', 'spec\/spec,bin\/spec,examples,\/var\/lib\/gems,\.autotest']
 end

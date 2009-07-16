@@ -1,15 +1,16 @@
 module S3BackupManager
   module BucketError
     class NoNameError < StandardError; end
-    class NoConfig < StandardError; end
+    class NoConfigError < StandardError; end
+    class NoBucketFoundError < StandardError; end
   end
 
   class Bucket
     attr_accessor :name
+    attr_accessor :s3_bucket
   
-    def initialize(name, s3_bucket)
+    def initialize(name)
       @name = name
-      @s3_bucket = s3_bucket
     end
   
     def self.find_all
@@ -20,7 +21,11 @@ module S3BackupManager
     def self.find(id)    
       connect!
       bucket = AWS::S3::Bucket.find(expand_name(id))
-      new(id, bucket)
+      initialize_with_bucket(id, bucket)
+    rescue AWS::S3::CurrentBucketNotSpecified
+      raise BucketError::NoNameError
+    rescue AWS::S3::NoSuchBucket
+      raise BucketError::NoBucketFoundError
     end
   
     def self.create!(name)
@@ -42,10 +47,17 @@ module S3BackupManager
     end
 
     private
+      def self.initialize_with_bucket(name, bucket)
+        this_bucket = new(name)
+        this_bucket.s3_bucket = bucket
+        this_bucket
+      end
+      
       def self.config
         YAML.load_file("/etc/s3backup-manager/config.yml")
       rescue Errno::ENOENT
-        raise S3BackupManager::BucketError::NoConfig.new("No configuration file could be found at /etc/s3backup-manager/config.yml")
+        raise S3BackupManager::BucketError::NoConfigError.new(
+          "No configuration file could be found at /etc/s3backup-manager/config.yml")
       end
     
       def self.expand_name(name)

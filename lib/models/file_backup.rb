@@ -1,4 +1,8 @@
 module S3BackupManager
+  module FileBackupError
+    class NoBucketError < StandardError; end
+  end
+  
   class FileBackup
     attr_accessor :bucket
   

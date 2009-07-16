@@ -1,25 +1,19 @@
 require "#{File.dirname(__FILE__)}/../spec_helper.rb"
 require "#{File.dirname(__FILE__)}/../../lib/s3backup-manager.rb"
-include S3BackupManager
 
-describe S3BackupManager::Bucket do
+describe Bucket do
   
   describe "when there is no configuration file" do
     it "should raise a config file missing error" do
       lambda do 
         Bucket.find_all
-      end.should raise_error(S3BackupManager::BucketError::NoConfig)
+      end.should raise_error(S3BackupManager::BucketError::NoConfigError)
     end
   end
   
   describe "when there is a configuration file" do
     before(:each) do
-      YAML.stub!(:load_file).with(
-        "/etc/s3backup-manager/config.yml").and_return(
-        {"aws_access_key_id" => "unique_key_id",
-         "aws_secret_access_key" => "sekret_keyz",
-         "encryption_secret" => "hrrmm_how_secret?",
-         "collection_prefix" => "backup_collection_name"})
+      stub_aws
       AWS::S3::Service.stub!(:buckets).and_return([
         mock("bucket", :name => "backup_collection_name_bucket_1"),
         mock("bucket", :name => "backup_collection_name_bucket_2"),
@@ -40,7 +34,7 @@ describe S3BackupManager::Bucket do
     end
     
     it "should find all buckets and strip off collection prefix" do
-      Bucket.find_all.include?("bucket_1")
+      Bucket.find_all.should be_include("bucket_1")
     end
     
     describe "when creating a new bucket" do
@@ -59,7 +53,7 @@ describe S3BackupManager::Bucket do
 
     describe "when managing files in a bucket" do
       before(:each) do
-        @bucket = Bucket.new("test_bucket", "")
+        @bucket = Bucket.new("test_bucket")
         AWS::S3::S3Object.stub!(:store)
         AWS::S3::S3Object.stub!(:value)
       end
@@ -78,7 +72,11 @@ describe S3BackupManager::Bucket do
       end
       
       it "should list the files in a bucket" do
-        pending
+        AWS::S3::Bucket.stub!(:find).with(
+          "backup_collection_name_bucket_name").and_return(
+          mock("bucket", :objects => ["file 1", "file 2"]))
+        @bucket = Bucket.find("bucket_name")
+        @bucket.files.should be_include("file 2")
       end
     end
   end
