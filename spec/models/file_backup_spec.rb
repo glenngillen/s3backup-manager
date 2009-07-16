@@ -1,5 +1,4 @@
 require "#{File.dirname(__FILE__)}/../spec_helper.rb"
-require "#{File.dirname(__FILE__)}/../../lib/s3backup-manager.rb"
 
 describe FileBackup do
   before(:each) do
@@ -29,7 +28,7 @@ describe FileBackup do
     pending
   end
   
-  it "should backup store the packed & encrypted file in the bucket" do
+  it "should backup the packed & encrypted file in the bucket" do
     pending
   end
   

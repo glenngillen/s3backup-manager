@@ -1,5 +1,4 @@
 require "#{File.dirname(__FILE__)}/../spec_helper.rb"
-require "#{File.dirname(__FILE__)}/../../lib/s3backup-manager.rb"
 
 describe Bucket do
   
