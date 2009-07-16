@@ -97,7 +97,10 @@ module S3BackupManager
       end
     
       def self.config
-        YAML.load_file("#{File.dirname(__FILE__)}/../config/config.yml")
+          YAML.load_file("/etc/s3backup-manager/config.yml")
+        rescue Errno::ENOENT
+          raise S3BackupManager::BucketError::NoConfigError.new(
+            "No configuration file could be found at /etc/s3backup-manager/config.yml")
       end
   end
 end

@@ -4,6 +4,27 @@ module S3BackupManager
     def mock_bucket
       stub_aws
       stub_bucket_find
+      @bucket.stub!(:store)
+    end
+    
+    def mock_filesystem_files
+      @lines = mock("lines")
+      @lines.stub!(:each).and_yield(["my data here"])
+      @lines.stub!(:write)
+    end
+    
+    def mock_filebackup_dependencies
+      mock_filesystem_files
+      @encrypter = mock("aes", :key= => nil, :iv= => nil, :final => nil)
+      @encrypter.stub!(:encrypt)
+      @encrypter.stub!(:decrypt)
+      OpenSSL::Cipher::Cipher.stub!(:new).with("AES-256-CBC").and_return(@encrypter)
+      
+      FileBackup.stub!(:open)
+      File.stub!(:delete)
+      Zlib::GzipWriter.stub!(:new)
+      Zlib::GzipReader.stub!(:new)
+      Archive::Tar::Minitar.stub!(:pack)
     end
     
     def mock_backup_files

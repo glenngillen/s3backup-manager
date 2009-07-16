@@ -4,7 +4,9 @@ describe FileBackup do
   before(:each) do
     mock_bucket
     mock_backup_files
+    mock_filebackup_dependencies
     @file_backup = FileBackup.new(:bucket => "test_bucket")
+    @file_backup.stub!(:open)
   end
   
   it "should return just filesystem files" do    
@@ -13,11 +15,17 @@ describe FileBackup do
   end
   
   it "should pack the file/directory into a tarball" do
-    pending
+    tgz_mock = mock("tgz")
+    Zlib::GzipWriter.should_receive(:new).and_return(tgz_mock)
+    Archive::Tar::Minitar.should_receive(:pack).with(
+      "somefile.txt", tgz_mock, true)
+    @file_backup.backup("somefile.txt")
   end
   
   it "should encrypt the data" do
-    pending
+    @encrypter.should_receive(:encrypt)
+    # @encrypter.should_receive(:update)
+    @file_backup.backup("#{File.dirname(__FILE__)}/../fixtures/test_backup_file.txt")
   end
   
   it "should decrypt the data" do
