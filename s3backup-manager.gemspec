@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.email = "glenn@rubypond.com"
   s.homepage = "http://github.com/rubypond/s3backup-manager"
   s.authors = ["Glenn Gillen"]
-  s.test_files = FileList['spec/**/*']
-  s.files = FileList['README.rdoc', 'Rakefile', 'lib/**/*.rb', 'bin/*', 'config/*']
+  s.test_files = Dir['spec/**/*']
+  s.files = Dir['README.rdoc', 'Rakefile', 'lib/**/*.rb', 'bin/*', 'config/*']
   s.has_rdoc = 'false'
   
   if s.respond_to? :specification_version then
