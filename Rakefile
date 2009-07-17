@@ -4,22 +4,7 @@ require 'rake/gempackagetask'
 require 'spec/rake/spectask'
 require 'rake/rdoctask'
 
-gem_spec = Gem::Specification.new do |s|
-  s.version = '0.0.3'
-  s.name = "s3backup-manager"
-  s.summary = "Scripts and daemon to manage encrypted backups on AmazonS3"
-  s.description = "A series of scripts and a rack application for backing up databases and filesystems into tarballs, encrypting, and then storing off-site on AmazonS3"
-  s.email = "glenn@rubypond.com"
-  s.homepage = "http://github.com/rubypond/s3backup-manager"
-  s.authors = ["Glenn Gillen"]
-  s.test_files = FileList['spec/**/*']
-  s.files = FileList['README.rdoc', 'Rakefile', 'lib/**/*.rb', 'bin/*', 'config/*']
-  s.add_dependency('aws-s3', '>= 0.4')
-  s.add_dependency('archive-tar-minitar', '>= 0.5.2')
-  s.has_rdoc = 'false'
-end
-
-Rake::GemPackageTask.new(gem_spec) do |pkg|
+Rake::GemPackageTask.new(eval(File.open('s3backup-manager.gemspec').read)) do |pkg|
   pkg.need_zip = false
   pkg.need_tar = false
 end
