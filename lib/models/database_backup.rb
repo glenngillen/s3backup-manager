@@ -19,23 +19,25 @@ module S3BackupManager
     end
   
     def backup(database)
-      databases = get_all_databases(@options) if database == :all
-      databases ||= [database]
-      databases.each do |db|
-        filename = "/tmp/#{db}"
-        dump_database_to_file(filename, @options)
-        super(filename, "databases/#{@options[:adapter]}")
-      end
+      filename = "/tmp/#{database}"
+      dump_database_to_file(filename, @options.merge(:database => database))
+      super(filename, "databases/#{@options[:adapter]}")
     end
-  
+
     def restore(database, timestamp)
-      databases = get_all_databases(@options) if databases == :all
-      databases ||= [database]
-      databases.each do |db|
-        filename = "#{@options[:adapter]}/#{timestamp}/#{db}"
-        super(filename, timestamp)
-        restore_database_from_file(filename, @options)
-      end
+      filename = "#{@options[:adapter]}/#{timestamp}/#{database}"
+      @dumped_filename = "/tmp/#{random_string}"
+      super(filename, timestamp, @dumped_filename, "databases")
+      restore_database_from_file(@dumped_filename, @options)
+      db_cleanup!
     end
+    
+    private
+      def db_cleanup!
+        if @dumped_filename
+          File.delete(@dumped_filename) 
+          @dumped_filename = nil
+        end
+      end
   end
 end

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'optparse'
 require 'rubygems'
-require 's3backup-manager'
+require "#{File.dirname(__FILE__)}/../lib/s3backup-manager"
 
 options = {}
 optparse = OptionParser.new do|opts|
@@ -9,7 +9,7 @@ optparse = OptionParser.new do|opts|
   
   options[:adapter] = "postgres"
   opts.on('--adapter ADAPTER', 'Type of database to backup. To be used with "--type database"' ) do |a|
-    unless ["mysql","postgres"].include?(t)
+    unless ["mysql","postgres"].include?(a)
       puts 'Only "mysql" and "postgres" are valid values for --adapter'
       exit(1)
     end
@@ -71,12 +71,15 @@ if options[:list] && options[:bucket]
   exit
 end
 
-if ARGV.size != 2
-  puts "Please specify the source and destination files"
-  exit(1)
-end
-
 source = ARGV[0]
 destination = ARGV[1]
 puts "Restoring #{source}..."
-backup_adapter.restore(source, options[:timestamp], destination)
+if options[:type] == "database"
+  backup_adapter.restore(source, options[:timestamp])
+else
+  if ARGV.size != 2
+    puts "Please specify the source and destination files"
+    exit(1)
+  end
+  backup_adapter.restore(source, options[:timestamp], destination)
+end

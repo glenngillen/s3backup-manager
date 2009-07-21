@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.version = '0.0.3'
+  s.version = '0.0.4'
   s.name = "s3backup-manager"
   s.summary = "Scripts and daemon to manage encrypted backups on AmazonS3"
   s.description = "A series of scripts and a rack application for backing up databases and filesystems into tarballs, encrypting, and then storing off-site on AmazonS3"

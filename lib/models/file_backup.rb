@@ -23,7 +23,11 @@ module S3BackupManager
     end
   
     def restore(file, timestamp, destination, directory = "filesystem")
-      data = bucket.retrieve("#{directory}/#{timestamp}/#{file}")
+      if file.match(timestamp)
+        data = bucket.retrieve("#{directory}/#{file}")
+      else
+        data = bucket.retrieve("#{directory}/#{timestamp}/#{file}")
+      end
       decrypted_file = decrypt(file, timestamp, data)
       unpack(decrypted_file, destination)
       cleanup!

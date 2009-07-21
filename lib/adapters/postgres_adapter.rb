@@ -15,12 +15,6 @@ module S3BackupManager
     end
 
     private
-      def get_all_databases
-        `sudo -u postgres psql -q -c "\\l" | 
-         sed -n 4,/\\eof/p | grep -v rows\\) | 
-         awk {'print $1'}`.split("\n")
-      end
-    
       def recreate_database(database)
         `sudo -u postgres dropdb #{database}`
         `sudo -u postgres createdb --encoding=UNICODE #{database}`
