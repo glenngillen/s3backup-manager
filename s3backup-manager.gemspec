@@ -1,15 +1,14 @@
 Gem::Specification.new do |s|
-  s.version = '0.0.7'
+  s.version = '0.0.8'
   s.name = "s3backup-manager"
+  s.files = Dir['README.rdoc'] + Dir['Rakefile'] + Dir['lib/**/*.rb'] + Dir['bin/*'] + Dir['config/*'] + Dir['spec/**/*']
   s.summary = "Scripts and daemon to manage encrypted backups on AmazonS3"
   s.description = "A series of scripts and a rack application for backing up databases and filesystems into tarballs, encrypting, and then storing off-site on AmazonS3"
   s.email = "glenn@rubypond.com"
   s.homepage = "http://github.com/rubypond/s3backup-manager"
   s.authors = ["Glenn Gillen"]
   s.test_files = Dir['spec/**/*']
-  s.files = Dir['README.rdoc'] + Dir['Rakefile'] + Dir['lib/**/*.rb'] + Dir['bin/*'] + Dir['config/*']
   s.bindir = 'bin'
-
   s.require_paths = [".", "lib"]
   s.executables = ["s3backup", "s3backup_monitor", "s3restore"]
   s.has_rdoc = 'false'
