@@ -17,17 +17,21 @@ module S3BackupManager
       [directory]
     end
   
-    def restore_database_from_file(username, database, filename)
-      # `psql -h localhost -d postgres -U postgres -f "/path/to/useraccts.sql" `
-      # exit(1) unless $?.success?
-      `sudo -u #{username} pg_restore --format=t -d #{database} #{filename}`
+    def restore_database_from_file(username, database, directory)
+      directory = "#{directory}/tmp/#{database}/s3postgresbackup/#{database}"
+      user_file = "#{directory}/globals.pgsql"
+      system "cd /tmp && sudo -u #{username} psql -f #{user_file} >/dev/null 2>&1"
+      exit(1) unless $?.success?
+      dump_file = "#{directory}/#{database}.pgsql"
+      recreate_database!(username, database)
+      system "cd /tmp && sudo -u #{username} pg_restore --format=t -d #{database} #{dump_file} >/dev/null 2>&1"
       exit(1) unless $?.success?
     end
 
     private
-      def recreate_database(database)
-        `sudo -u postgres dropdb #{database}`
-        `sudo -u postgres createdb --encoding=UNICODE #{database}`
+      def recreate_database!(username, database)
+        system "cd /tmp && sudo -u #{username} dropdb #{database}"
+        system "cd /tmp && sudo -u #{username} createdb --encoding=UNICODE #{database}"
       end
     
   end

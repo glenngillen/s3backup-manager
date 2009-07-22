@@ -31,14 +31,14 @@ module S3BackupManager
       filename = "#{@options[:adapter]}/#{timestamp}/#{database}"
       @dumped_filename = "/tmp/#{random_string}"
       super(filename, timestamp, @dumped_filename, "databases")
-      restore_database_from_file(@options[:username], database, "#{@dumped_filename}/tmp/#{database}")
+      restore_database_from_file(@options[:username], database, @dumped_filename)
       db_cleanup!
     end
     
     private
       def db_cleanup!
         if @dumped_filename
-          File.delete(@dumped_filename) 
+          FileUtils.rm_r(@dumped_filename) 
           @dumped_filename = nil
         end
       end
