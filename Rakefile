@@ -4,7 +4,13 @@ require 'rake/gempackagetask'
 require 'spec/rake/spectask'
 require 'rake/rdoctask'
 
-Rake::GemPackageTask.new(eval(File.open('s3backup-manager.gemspec').read)) do |pkg|
+spec_data = File.open('s3backup-manager.gemspec').read
+spec = nil
+Thread.new do
+  spec = eval("$SAFE = 3\n#{spec_data}")
+end.join
+
+Rake::GemPackageTask.new(spec) do |pkg|
   pkg.need_zip = false
   pkg.need_tar = false
 end
