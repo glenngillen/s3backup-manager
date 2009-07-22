@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'aws/s3'
 require 'zlib'
 require 'archive/tar/minitar'

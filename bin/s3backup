@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 require 'optparse'
-require "s3backup-manager"
+begin
+  require 's3backup-manager'
+rescue LoadError
+  require "#{File.dirname(__FILE__)}/../lib/s3backup-manager"
+end  
 
 options = {}
 optparse = OptionParser.new do|opts|

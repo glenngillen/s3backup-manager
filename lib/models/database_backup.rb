@@ -19,16 +19,19 @@ module S3BackupManager
     end
   
     def backup(database)
-      filename = "/tmp/#{database}"
-      dump_database_to_file(filename, @options.merge(:database => database))
-      super(filename, "databases/#{@options[:adapter]}")
+      directory = "/tmp/#{database}"
+      files = dump_database_to_file(@options[:username], database, directory)
+      super(files, "databases/#{@options[:adapter]}")
+      files.each do |file|
+        FileUtils.rm_r(file)
+      end
     end
 
     def restore(database, timestamp)
       filename = "#{@options[:adapter]}/#{timestamp}/#{database}"
       @dumped_filename = "/tmp/#{random_string}"
       super(filename, timestamp, @dumped_filename, "databases")
-      restore_database_from_file(@dumped_filename, @options)
+      restore_database_from_file(@options[:username], database, "#{@dumped_filename}/tmp/#{database}")
       db_cleanup!
     end
     

@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 require 'optparse'
-require "s3backup-manager"
+begin
+  require 's3backup-manager'
+rescue LoadError
+  require "#{File.dirname(__FILE__)}/../lib/s3backup-manager"
+end  
 
 options = {}
 optparse = OptionParser.new do|opts|
@@ -31,6 +35,10 @@ optparse = OptionParser.new do|opts|
     end
     options[:type] = t.downcase
     options[:type_provided] = true
+  end
+  
+  opts.on('--username USER', 'User to connect to the database as' ) do |u|
+    options[:username] = u
   end
 
   opts.on('-h', '--help', 'Display this screen') do
