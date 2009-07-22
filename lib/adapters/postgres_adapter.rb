@@ -4,6 +4,8 @@ module S3BackupManager
     def dump_database_to_file(username, database, directory)
       directory = "#{directory}/s3postgresbackup/#{database}"
       FileUtils.mkdir_p(directory)
+      FileUtils.chmod_R 0770, directory
+      FileUtils.chown_R nil, username, directory
       system "cd #{directory} && sudo -u #{username} vacuumdb -z #{database} >/dev/null 2>&1"
       exit(1) unless $?.success?
       dump_file = "#{directory}/#{database}.pgsql"
