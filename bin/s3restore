@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'optparse'
-require 'rubygems'
-require "#{File.dirname(__FILE__)}/../lib/s3backup-manager"
+require "s3backup-manager"
 
 options = {}
 optparse = OptionParser.new do|opts|
