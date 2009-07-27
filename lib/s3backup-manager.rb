@@ -4,6 +4,7 @@ require 'zlib'
 require 'archive/tar/minitar'
 require 'yaml'
 
+
 Dir["#{File.dirname(__FILE__)}/adapters/*"].each do |lib|
   require lib
 end
