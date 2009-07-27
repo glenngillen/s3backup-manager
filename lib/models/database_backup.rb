@@ -29,8 +29,8 @@ module S3BackupManager
 
     def restore(database, timestamp)
       filename = "#{@options[:adapter]}/#{timestamp}/#{database}"
-      @dumped_filename = "/tmp/#{random_string}"
-      super(filename, timestamp, @dumped_filename, "databases")
+      @dumped_filename = "/tmp/#{database}/s3postgresbackup/#{database}"
+      super(filename, timestamp, "/", "databases")
       restore_database_from_file(@options[:username], database, @dumped_filename)
       db_cleanup!
     end

@@ -18,7 +18,7 @@ module S3BackupManager
     end
   
     def restore_database_from_file(username, database, directory)
-      directory = "#{directory}/tmp/#{database}/s3postgresbackup/#{database}"
+      system "chown -R #{username} #{directory}"
       user_file = "#{directory}/globals.pgsql"
       system "cd /tmp && sudo -u #{username} psql -f #{user_file} >/dev/null 2>&1"
       exit(1) unless $?.success?
@@ -30,8 +30,8 @@ module S3BackupManager
 
     private
       def recreate_database!(username, database)
-        system "cd /tmp && sudo -u #{username} dropdb #{database}"
-        system "cd /tmp && sudo -u #{username} createdb --encoding=UNICODE #{database}"
+        # system "cd /tmp && sudo -u #{username} dropdb #{database}"
+        system "cd /tmp && sudo -u #{username} createdb --encoding=UNICODE #{database} > /dev/null 2>&1"
       end
     
   end
