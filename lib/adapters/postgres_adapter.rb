@@ -18,14 +18,20 @@ module S3BackupManager
     end
   
     def restore_database_from_file(username, database, directory)
-      system "chown -R #{username} #{directory}"
+      system "chown -R #{username} /tmp/#{database}"
       user_file = "#{directory}/globals.pgsql"
       system "cd /tmp && sudo -u #{username} psql -f #{user_file} >/dev/null 2>&1"
-      exit(1) unless $?.success?
+      unless $?.success?
+        puts "Unable to load in the users"
+        exit(1) 
+      end
       dump_file = "#{directory}/#{database}.pgsql"
       recreate_database!(username, database)
       system "cd /tmp && sudo -u #{username} pg_restore --format=t -d #{database} #{dump_file} >/dev/null 2>&1"
-      exit(1) unless $?.success?
+      unless $?.success?
+        puts "Unable to restore database. Did you provide a username that has permission?"
+        exit(1) 
+      end
     end
 
     private
