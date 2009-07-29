@@ -15,9 +15,9 @@ module S3BackupManager
       bucket.files.select{|f| f.key.match(%r{^filesystem/})}
     end
   
-    def backup(files, directory = "filesystem")
-      stored_file_name = "#{Time.now.strftime("%Y%m%d%H%M%S")}/#{File.basename(files.first)}"
-      encrypted_file = encrypt(pack(files))
+    def backup(file, directory = "filesystem")
+      stored_file_name = "#{Time.now.strftime("%Y%m%d%H%M%S")}/#{File.basename(file)}"
+      encrypted_file = encrypt(pack(file))
       bucket.store("#{directory}/#{stored_file_name}", open(encrypted_file))    
       cleanup!
     end
@@ -83,10 +83,10 @@ module S3BackupManager
         @decrypted_filename
       end
     
-      def pack(files)
-        @packed_filename = "#{random_string}_#{File.basename(files.first)}.tgz"
+      def pack(file)
+        @packed_filename = "#{random_string}_#{File.basename(file)}.tgz"
         tgz = Zlib::GzipWriter.new(File.open(@packed_filename, 'wb'))
-        Archive::Tar::Minitar.pack(files, tgz, recurse_directories = true)
+        Archive::Tar::Minitar.pack(file, tgz, recurse_directories = true)
         @packed_filename
       end
       

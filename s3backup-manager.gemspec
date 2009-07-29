@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.version = '0.1.4'
+  s.version = '0.1.5'
   s.name = "s3backup-manager"
   s.files = ["README.rdoc", "Rakefile", "lib/adapters/mysql_adapter.rb", "lib/adapters/postgres_adapter.rb", "lib/controllers/backup_manager.rb", "lib/models/bucket.rb", "lib/models/database_backup.rb", "lib/models/file_backup.rb", "lib/models/schedule.rb", "lib/s3backup-manager.rb", "bin/s3backup", "bin/s3backup_monitor", "bin/s3restore", "config/config.yml", "config/schedule.yml", "spec/adapters", "spec/adapters/couchdb_adapter_spec.rb", "spec/adapters/mysql_adapter_spec.rb", "spec/adapters/postgres_adapter_spec.rb", "spec/fixtures", "spec/fixtures/test_backup_file.txt", "spec/lib", "spec/lib/mocks.rb", "spec/models", "spec/models/bucket_spec.rb", "spec/models/database_backup_spec.rb", "spec/models/file_backup_spec.rb", "spec/spec.opts", "spec/spec_helper.rb"]
   s.summary = "Scripts and daemon to manage encrypted backups on AmazonS3"

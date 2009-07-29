@@ -19,7 +19,7 @@ module S3BackupManager
     end
   
     def backup(database)
-      directory = "/tmp/#{database}"
+      directory = "#{config[:temp_dir]}/#{database}"
       files = dump_database_to_file(@options[:username], database, directory)
       super(files, "databases/#{@options[:adapter]}")
       files.each do |file|
@@ -29,7 +29,7 @@ module S3BackupManager
 
     def restore(database, timestamp)
       filename = "#{@options[:adapter]}/#{timestamp}/#{database}"
-      @dumped_filename = "/tmp/#{database}/s3postgresbackup/#{database}"
+      @dumped_filename = "#{config[:temp_dir]}/#{database}/s3postgresbackup/#{database}"
       super(filename, timestamp, "/", "databases")
       restore_database_from_file(@options[:username], database, @dumped_filename)
       db_cleanup!

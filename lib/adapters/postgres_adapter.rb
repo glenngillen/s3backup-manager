@@ -18,16 +18,16 @@ module S3BackupManager
     end
   
     def restore_database_from_file(username, database, directory)
-      system "chown -R #{username} /tmp/#{database}"
+      system "chown -R #{username} #{config[:temp_dir]}/#{database}"
       user_file = "#{directory}/globals.pgsql"
-      system "cd /tmp && sudo -u #{username} psql -f #{user_file} >/dev/null 2>&1"
+      system "cd #{config[:temp_dir]} && sudo -u #{username} psql -f #{user_file} >/dev/null 2>&1"
       unless $?.success?
         puts "Unable to load in the users"
         exit(1) 
       end
       dump_file = "#{directory}/#{database}.pgsql"
       recreate_database!(username, database)
-      system "cd /tmp && sudo -u #{username} pg_restore --format=t -d #{database} #{dump_file} >/dev/null 2>&1"
+      system "cd #{config[:temp_dir]} && sudo -u #{username} pg_restore --format=t -d #{database} #{dump_file} >/dev/null 2>&1"
       unless $?.success?
         puts "Unable to restore database. Did you provide a username that has permission?"
         exit(1) 
@@ -36,8 +36,7 @@ module S3BackupManager
 
     private
       def recreate_database!(username, database)
-        # system "cd /tmp && sudo -u #{username} dropdb #{database}"
-        system "cd /tmp && sudo -u #{username} createdb --encoding=UNICODE #{database} > /dev/null 2>&1"
+        system "cd #{config[:temp_dir]} && sudo -u #{username} createdb --encoding=UNICODE #{database} > /dev/null 2>&1"
       end
     
   end
